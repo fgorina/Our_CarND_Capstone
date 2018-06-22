@@ -59,7 +59,8 @@ class WaypointUpdater(object):
     def loop(self):
         rate = rospy.Rate(30)  # Perhaps reduce to 30 hertz. Originally it is 50
         while not rospy.is_shutdown():
-            if self.pose and self.base_waypoints:
+            if self.pose and self.base_waypoints and self.waypoint_tree:
+                # Get closest waypoint
                 closest_waypoint_idx = self.get_closest_waypoint_idx()
                 self.publish_waypoints(closest_waypoint_idx)
             rate.sleep()
@@ -67,17 +68,17 @@ class WaypointUpdater(object):
     def get_closest_waypoint_idx(self):
         x = self.pose.pose.position.x
         y = self.pose.pose.position.y
-        closest_idx = self.waypoint_tree.query([x,y], 1)[1]
+        closest_idx = self.waypoint_tree.query([x,y],1)[1] # get the closest point index
 
-        # could bee before of after
-
+        # could be before of after
+        # Check if closest is ahead or behind vehicle
         closest_coord = self.waypoints_2d[closest_idx]
         prev_coord = self.waypoints_2d[closest_idx-1]
 
         # We compute the vectors from prev to cl and cl to car
         #  If they are in the same direction (dot > 0) then closest is rear car, need following point
         #  If not is after pose,
-
+        # Equation for hyperplane through closest_coords
         cl_vect = np.array(closest_coord)
         prev_vect = np.array(prev_coord)
         car_vect = np.array([x, y])
@@ -89,7 +90,6 @@ class WaypointUpdater(object):
 
         if val > 0:
             closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
-
         return closest_idx
 
     def publish_waypoints(self, closest_idx):
@@ -97,11 +97,11 @@ class WaypointUpdater(object):
         lane.header = self.base_waypoints.header
 
         # Just make a deepcopy so altering speed due to a traffic light or other reason
-        # does  ot modify the original waypoints desired speed
+        # does not modify the original waypoints desired speed
 
         lane.waypoints = deepcopy(self.base_waypoints.waypoints[closest_idx:closest_idx+LOOKAHEAD_WPS])
 
-        npoints = 60   # Horizon to detect lights and braking distance.
+        npoints = 60   # Horizon to detect lights and breaking distance.
 
         # Check if there is a light and if it is in front of us and not too far away
         # state is used to display the Breaking or Accelerating messages just when changing
@@ -110,9 +110,9 @@ class WaypointUpdater(object):
             light_idx = self.light_wp - closest_idx
 
             for i in range(len(lane.waypoints)):  #reduce speed in 10 waypoints
-                if i < light_idx :
+                if i < light_idx:
                     if self.old_state == 0:
-                        rospy.logwarn("Braking")
+                        rospy.logwarn("Breaking")
                         self.old_state = 1
 
                     vel = self.get_waypoint_velocity(lane.waypoints[i])
@@ -128,7 +128,7 @@ class WaypointUpdater(object):
                     
 
                     # If we are before the stoping line reduce speed linearly, else just stopped
-                    if i < light_idx :
+                    if i < light_idx:
                         vel = vel * math.sqrt(1.0 - ((light_idx-i)*1.0)/(light_idx*1.0))
                     else:
                         vel = 0.0
@@ -141,7 +141,7 @@ class WaypointUpdater(object):
 
         # Just in case we have given all round we copy points from the begining
 
-        if len(lane.waypoints) < LOOKAHEAD_WPS  or False :
+        if len(lane.waypoints) < LOOKAHEAD_WPS  or False:
             morepoints = LOOKAHEAD_WPS - len(lane.waypoints)
             lane.waypoints += self.base_waypoints.waypoints[0:morepoints]
 
@@ -164,6 +164,7 @@ class WaypointUpdater(object):
         rospy.logwarn("Waypoints "+str(len(self.base_waypoints.waypoints)))
 
         if not self.waypoints_2d:
+            rospy.logwarn("Initialize waypoints_2d, waypoint_tree")
             self.waypoints_2d = [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] for waypoint in waypoints.waypoints]
             self.waypoint_tree = KDTree(self.waypoints_2d)
 
