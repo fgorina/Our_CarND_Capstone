@@ -7,12 +7,20 @@ class TLClassifier(object):
     def __init__(self):
         #TODO load classifier
 
-        self.detection_graph = self.load_graph("../../ssd_bags_20K/frozen_inference_graph.pb")
+        self.detection_graph = self.load_graph(self.get_graph_path())
         self.image_tensor = self.detection_graph.get_tensor_by_name('image_tensor:0')
         self.detection_boxes = self.detection_graph.get_tensor_by_name('detection_boxes:0')
         self.detection_scores = self.detection_graph.get_tensor_by_name('detection_scores:0')
         self.detection_classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
         self.sess = tf.Session(graph=self.detection_graph)
+
+    def get_graph_path(self):
+        tf_version = tf.__version__
+        path = "../../ssd_bags_20K/frozen_inference_graph.pb"
+        if tf_version <= '1.3.0':
+            path = "../../ssd_bags_20K_tf1.3/frozen_inference_graph.pb"
+        print("Tensorflow ", tf_version , ": using SSD reference model from path ", path)
+        return path
 
     def filter_boxes(self, min_score, boxes, scores, classes):
         n = len(classes)
@@ -37,8 +45,6 @@ class TLClassifier(object):
                 od_graph_def.ParseFromString(serialized_graph)
                 tf.import_graph_def(od_graph_def, name='')
         return graph
-
-
 
     def get_classification(self, image):
         """Determines the color of the traffic light in the image
