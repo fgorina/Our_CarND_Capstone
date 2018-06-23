@@ -22,6 +22,10 @@ class TLDetector(object):
         self.waypoints = None
         self.camera_image = None
         self.lights = []
+        self.light_classifier = None
+        self.state = None
+        self.last_wp = -1
+        self.state_count = 0
 
         # For indexing the waypoints
 
@@ -52,8 +56,6 @@ class TLDetector(object):
 
         self.state = TrafficLight.UNKNOWN
         self.last_state = TrafficLight.UNKNOWN
-        self.last_wp = -1
-        self.state_count = 0
 
         rospy.logwarn("Initializing detector")
 
@@ -116,8 +118,9 @@ class TLDetector(object):
             x, y position of the points
 
         '''
-
-        closest_idx = self.waypoint_tree.query([x, y], 1)[1]
+        closest_idx = 0
+        if self.waypoint_tree is not None: # Defensive validation
+            closest_idx = self.waypoint_tree.query([x, y], 1)[1]
         return closest_idx
 
     def get_light_state(self, light):
@@ -133,7 +136,8 @@ class TLDetector(object):
 
         #return light.state # PACO: Testing
 
-        if(not self.has_image):
+        # Validations, there is an image and the light classifier is ready
+        if(not self.has_image or not self.light_classifier):
             self.prev_light_loc = None
             return False
 
@@ -160,7 +164,7 @@ class TLDetector(object):
             car_wp_idx = self.get_closest_waypoint(self.pose.pose.position.x, self.pose.pose.position.y)
 
         #TODO find the closest visible traffic light (if one exists)
-        diff = len(self.waypoints.waypoints)
+        diff = len(self.waypoints.waypoints) if self.waypoints and self.waypoints.waypoints else -1 # Defensive validation
         for i, light in enumerate(self.lights):
             # Get stop line waypoint index
             line = stop_line_positions[i]
