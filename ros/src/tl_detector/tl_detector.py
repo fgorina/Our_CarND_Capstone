@@ -131,7 +131,7 @@ class TLDetector(object):
 
         """
 
-        # return light.state # PACO: Testing
+        #return light.state # PACO: Testing
 
         if(not self.has_image):
             self.prev_light_loc = None
@@ -160,11 +160,12 @@ class TLDetector(object):
             car_wp_idx = self.get_closest_waypoint(self.pose.pose.position.x, self.pose.pose.position.y)
 
         #TODO find the closest visible traffic light (if one exists)
-
         diff = len(self.waypoints.waypoints)
         for i, light in enumerate(self.lights):
+            # Get stop line waypoint index
             line = stop_line_positions[i]
             temp_wp_idx = self.get_closest_waypoint(line[0], line[1])
+            # Find closest stop line waypoint index
             d = temp_wp_idx - car_wp_idx
             if d >= 0 and d < diff:
                 diff = d
