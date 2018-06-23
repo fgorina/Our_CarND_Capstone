@@ -51,6 +51,7 @@ class WaypointUpdater(object):
         self.waypoints_2d = None
         self.waypoint_tree = None
         self.pose = None
+        self.npoints = 60   # Horizon to detect lights and breaking distance.
 
         self.light_wp = -1
         self.old_state = 0
@@ -101,12 +102,10 @@ class WaypointUpdater(object):
 
         lane.waypoints = deepcopy(self.base_waypoints.waypoints[closest_idx:closest_idx+LOOKAHEAD_WPS])
 
-        npoints = 60   # Horizon to detect lights and breaking distance.
-
         # Check if there is a light and if it is in front of us and not too far away
         # state is used to display the Breaking or Accelerating messages just when changing
 
-        if self.light_wp != -1 and self.light_wp - closest_idx < npoints and self.light_wp - closest_idx >= 0:
+        if self.light_wp != -1 and self.light_wp - closest_idx < self.npoints and self.light_wp - closest_idx >= 0:
             light_idx = self.light_wp - closest_idx
 
             for i in range(len(lane.waypoints)):  #reduce speed in 10 waypoints
