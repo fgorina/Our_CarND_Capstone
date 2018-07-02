@@ -18,9 +18,9 @@ For installation check the original project readme file [here](https://github.co
 
 The System Architecture is detailed as follows:
 
-![](./imgs/final-project-ros-graph-v2.png)
+![Architecture](./imgs/final-project-ros-graph-v2.png)
 
-All code is located in [./ros/src](). The main components are:
+All code is located in [src](./ros/src). The main components are:
 
   - Perception
   - Planning
@@ -52,7 +52,7 @@ The Control module is in charge of moving the vehicle:
   - DBW Node
   - Waypoint follower
   
-More detail [control.md](here).
+More detail [here](control.md).
 
 ### Car or Simulation
 

@@ -15,7 +15,7 @@ The Drive By Wire node is in charge of moving the vehicle using the steering, th
 
 This node subscribes to `/final_waypoints` data and publishes `/twist_cmd` for the dbw node to use.
 
-For validation the project includes the [ros/src/twist_controller/dbw_test.py](dbw_test.py) generating 3 files:
+For validation the project includes the [dbw_test.py](ros/src/twist_controller/dbw_test.py) generating 3 files:
 
   - steers.csv
   - throttles.csv
@@ -37,12 +37,12 @@ Results are:
 
 ### Steering
 
-![](./ros/src/twist_controller/twist_controller/steers.png)
+![steering](ros/src/twist_controller/steers.png)
 
 ### Throttle
 
-![](./ros/src/twist_controller/twist_controller/throttles.png)
+![throttle](ros/src/twist_controller/throttles.png)
 
 ### Brakes
 
-![](./ros/src/twist_controller/twist_controller/brakes.png)
+![Brakes](ros/src/twist_controller/brakes.png)
