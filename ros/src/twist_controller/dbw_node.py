@@ -72,7 +72,7 @@ class DBWNode(object):
         self.angular_vel = None
         self.dbw_enabled = None
         self.steering = 0
-        self.throtte = 0
+        self.throttle = 0
         self.brake = 0
 
 
@@ -99,7 +99,7 @@ class DBWNode(object):
     # Subscribing
 
     def dbw_enabled_cb(self, msg):
-        rospy.logwarn("DBW status received")
+        rospy.logwarn("DBW status received %s", msg.data)
         self.dbw_enabled = msg
 
     def twist_cb(self, msg):
@@ -111,6 +111,7 @@ class DBWNode(object):
         self.current_vel = msg.twist.linear.x
 
     def publish(self, throttle, brake, steer):
+
         tcmd = ThrottleCmd()
         tcmd.enable = True
         tcmd.pedal_cmd_type = ThrottleCmd.CMD_PERCENT
@@ -128,6 +129,9 @@ class DBWNode(object):
         bcmd.pedal_cmd = brake
         self.brake_pub.publish(bcmd)
 
+        if throttle > 0 and brake > 0:
+            output_msg = "publish (%.2f,"%throttle + "%.2f,"%brake + "%.2f)"%steer
+            rospy.logwarn(output_msg)
 
 if __name__ == '__main__':
     DBWNode()
