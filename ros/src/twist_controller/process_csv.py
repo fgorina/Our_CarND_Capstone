@@ -5,7 +5,7 @@ import csv
 
 def plot_file(file_name, title, legend1, legend2):
     '''
-    generates a graph with plotting data
+    Plots csv data
     '''
     x = []
     y = []
