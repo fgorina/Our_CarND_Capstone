@@ -51,10 +51,16 @@ Results are:
 
 ![steering](ros/src/twist_controller/steers.png)
 
+The proposed `steering` value almost matches the `actual` one. The only section it does not follow the `actual` value is after passing the `max_steer_angle` value 8 detailed in files [dbw.launch](./ros/src/twist_controller/launch/dbw.launch) and [dbw_sim.launch](./ros/src/twist_controller/launch/dbw_sim.launch). Notice the minimum goes to `steering` -8.
+
 ### Throttle
 
 ![throttle](ros/src/twist_controller/throttles.png)
 
+The `throttle` has a maximum value of 0.2 and proportial to it. That's why the proposed value cuts at 0.2 and does not follow the `actual` one.
+
 ### Brakes
 
 ![Brakes](ros/src/twist_controller/brakes.png)
+
+The `brake` uses the `throttle` and `decel_limit` to control how much it should brake. Notice that as the maximum `throttle` is 0.2 (low value), it does not need an aggrestive brake control.
