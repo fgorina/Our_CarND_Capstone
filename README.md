@@ -36,7 +36,7 @@ The Perception module can be divided in the following components:
   - Obstacle Detection
   - Traffic Light Detection
 
-TODO, improve here
+More detail [here](perception.md).
 
 ### Planning
 
@@ -45,7 +45,7 @@ The Planning module includes the following nodes:
   - Waypoint loader
   - Waypoint updater
 
-TODO, improve here
+More detail [here](planning.md).
 
 ### Control
 
