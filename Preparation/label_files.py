@@ -10,9 +10,8 @@ from scipy.stats import norm
 import argparse
 import glob
 
-
 plt.style.use('ggplot')
-
+then = time.time()
 
 # Colors (one for each class)
 cmap = ImageColor.colormap
@@ -56,7 +55,7 @@ def to_image_coords(boxes, height, width):
 
 def draw_boxes(image, boxes, classes, thickness=4):
     """Draw bounding boxes on the image"""
-    font = ImageFont.truetype(font="xerox.ttf", size=10, index=0, encoding='')
+    font = ImageFont.truetype(font="arial.ttf", size=10, index=0, encoding='')
     draw = ImageDraw.Draw(image)
     for i in range(len(boxes)):
         bot, left, top, right = boxes[i, ...]
@@ -155,18 +154,15 @@ def get_color(img):
         return get_horizontal_color(img)
 
 parser = argparse.ArgumentParser()
-#parser.add_argument('--graph_file', dest='graph_file', required=True)
+parser.add_argument('--graph_file', dest='graph_file', required=True)
 parser.add_argument('--image_path', dest='image_path', required=True)
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    #GRAPH_FILE = args.graph_file
+    GRAPH_FILE = args.graph_file
     image_dir = args.image_path
 
-
-
-
-    GRAPH_FILE = 'faster_rcnn_inception_resnet_v2_atrous_coco_2018_01_28/frozen_inference_graph.pb'
+    #GRAPH_FILE = 'faster_rcnn_inception_resnet_v2_atrous_coco_2018_01_28/frozen_inference_graph.pb'
     #GRAPH_FILE="ssd_mobilenet_v1_coco_2017_11_17/frozen_inference_graph.pb"
     detection_graph = load_graph(GRAPH_FILE)
 
@@ -196,7 +192,7 @@ if __name__ == '__main__':
         files = glob.glob(image_dir+"/*.[pj][np]g")
 
         for f in files:
-            # print(f)
+            #print(f)
             image = Image.open(f)
             name = f.split("/")[-1].split(".")[-2]
             raw_img = np.asarray(image, dtype=np.uint8)
@@ -249,3 +245,9 @@ if __name__ == '__main__':
     # Es evident de les proves que el color del llum no es important
     # i sí que ho es la seva posició. Necessitem doncs una funció que:
     # calculi en quin terç esta la màxima intensitat.
+    now = time.time()
+    diff = now - then
+    minutes, seconds = int(diff // 60), int(diff % 60)
+    print('Elapsed time {:d}:{:d} minutes'.format(minutes, seconds))
+
+
