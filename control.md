@@ -17,6 +17,8 @@ The Drive By Wire node is in charge of moving the vehicle using the steering, th
 
 This node subscribes to `/final_waypoints` data and publishes `/twist_cmd` for the dbw node to use.
 
+The implementation follows the comments from the [DBW Walkthrough](https://youtu.be/kdfXo6atphY) and takes some ideas from the [TwistControllerNode](https://bitbucket.org/DataspeedInc/dbw_mkz_ros/src/7d50c3ebe187e371b7834d8feaa62dffc5c18efa/dbw_mkz_twist_controller/src/TwistControllerNode.cpp) from DataspeedInc.
+
 For validation, the project includes the [dbw_test.py](ros/src/twist_controller/dbw_test.py) which generates the following 3 files:
 
   - steers.csv
