@@ -55,7 +55,7 @@ def to_image_coords(boxes, height, width):
 
 def draw_boxes(image, boxes, classes, thickness=4):
     """Draw bounding boxes on the image"""
-    font = ImageFont.truetype(font="arial.ttf", size=10, index=0, encoding='')
+    font = ImageFont.truetype(font="FreeMono.ttf", size=10, index=0, encoding='')
     draw = ImageDraw.Draw(image)
     for i in range(len(boxes)):
         bot, left, top, right = boxes[i, ...]
