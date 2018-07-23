@@ -1,4 +1,82 @@
-Notes files to document the process.
+Notes files to document the Training process.
+
+### Retraining SSD Object detection to classify 3 classes
+
+#### Generate Images from simulation and bag files.
+
+First we saved several bag files from the simulation. Then with the provided "real world" bags we extracted images using the [bag_to_images.py](./Preparation/bag_to_images.py) file.
+
+We created a script to automatically [label](./Preparation/label_files.py) the images.
+
+#### Generating CSV files from Images
+
+The goal is to label the images and generate a csv text file. Using the format_annotations.js file we create a json files with the annotations and the image urls.
+
+#### Generating TFRecords
+
+TensorFlow object detection API doesn't take csv files as an input, but it needs record files to train the model.
+
+The record_maker.py file combines annotations and image files in a big tensor record array which is the input to the train algorithm.
+
+As a plus the record_maker.py splits the set in 2 ones with 80% of the records for train and the other with 20% for evaluation purposes.
+
+#### Training the Model
+
+First, we decided which pre-trained model to be used. The selection was [ssd_mobilenet_v2_coco_2018_03_29](https://github.com/tensorflow/models/blob/master/research/object_detection/models/ssd_mobilenet_v2_feature_extractor.py).
+
+Then, we downloaded the config file for the same model and changed the configuration.
+
+Created a new object-detection.pbtxt file
+
+```
+item {
+  id: 1
+  name: '/m/015qff/Red'
+  display_name: "Red"
+}
+item {
+  name: "/m/015qff/Orange"
+  id: 1
+  display_name: "Orange"
+}
+item {
+  name: "/m/015qff/Green"
+  id: 1
+  display_name: "Green"
+}
+```
+
+The .config file changed accordingly
+
+```
+num_classes: 3
+
+batch_size: 18
+PATH_TO_BE_CONFIGURED # location of files and resources
+```
+
+The train process:
+
+```
+python train.py --logtostderr \
+       --train_dir=training/ \
+ --pipeline_config_path=training/ssd_mobilenet_v1_coco.config
+```
+
+#### Export the inference graph
+
+To test the model and check it works we need to export the inference graph. An example command is:
+
+```
+python export_inference_graph.py \
+    --input_type image_tensor \
+    --pipeline_config_path=training/ssd_mobilenet_v1_coco.config \
+    --trained_checkpoint_prefix=training/model.ckpt-66454 \
+    --output_directory=new_inference_graph
+```
+
+Notice 66454 value will change on your execution.
+
 
 ### SSD Object detection does not work in TF 1.3
 
