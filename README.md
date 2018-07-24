@@ -6,9 +6,9 @@ For more information about the [project](https://github.com/udacity/CarND-Capsto
 
 ## Team: Speedy
 
-  - Francisco Gorina (lead) : fgorina@gmail.com
-  - Ricardo Rios : ricardo.rios.sv@gmail.com
-  - Luciano Silveira : ladrians@gmail.com
+  - [Francisco Gorina](https://github.com/fgorina) (lead) : fgorina@gmail.com
+  - [Ricardo Rios](https://github.com/ricardoues) : ricardo.rios.sv@gmail.com
+  - [Luciano Silveira](https://github.com/ladrians) : ladrians@gmail.com
   - Frank Wong : wfhit@139.com
   - Omar Barrera : oabj1986@gmail.com
 
