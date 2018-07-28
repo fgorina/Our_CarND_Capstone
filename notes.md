@@ -10,15 +10,15 @@ We created a script to automatically [label](./Preparation/label_files.py) the i
 
 #### Generating CSV files from Images
 
-The goal is to label the images and generate a csv text file. Using the format_annotations.js file we create a json files with the annotations and the image urls.
+The goal is to label the images and generate a csv text file. Using the [format_annotations.js](./Preparation/format_annotations.py) file we create a json files with the annotations and the image urls.
 
 #### Generating TFRecords
 
 TensorFlow object detection API doesn't take csv files as an input, but it needs record files to train the model.
 
-The record_maker.py file combines annotations and image files in a big tensor record array which is the input to the train algorithm.
+The [record_maker.py](./Preparation/record_maker.py) file combines annotations and image files in a big tensor record array which is the input to the train algorithm.
 
-As a plus the record_maker.py splits the set in 2 ones with 80% of the records for train and the other with 20% for evaluation purposes.
+As a plus the [record_maker.py](./Preparation/record_maker.py) file splits the set in two with 80% of the records for training and the other with 20% for evaluation purposes.
 
 #### Training the Model
 
@@ -26,34 +26,25 @@ First, we decided which pre-trained model to be used. The selection was [ssd_mob
 
 Then, we downloaded the config file for the same model and changed the configuration.
 
-Created a new object-detection.pbtxt file
+Created a new label_map.pbtxt file containing the definition for the traffic light class we want to detect:
 
 ```
 item {
-  id: 1
-  name: '/m/015qff/Red'
-  display_name: "Red"
-}
-item {
-  name: "/m/015qff/Orange"
-  id: 1
-  display_name: "Orange"
-}
-item {
-  name: "/m/015qff/Green"
-  id: 1
-  display_name: "Green"
-}
-```
+id: 1
+name: '/m/015qff'
+}```
 
 The .config file changed accordingly
 
 ```
+...
 num_classes: 3
-
+...
 batch_size: 18
 PATH_TO_BE_CONFIGURED # location of files and resources
 ```
+
+Once the detection is done, we use the box and our own algorithm for labelling the colors: UNKNOWN, RED, ORANGE, GREEN.
 
 The train process:
 
@@ -85,7 +76,7 @@ The SSD was exported using a Tensorflow version higher than 1.3, so testing on t
 ```bash
 Check whether your GraphDef-interpreting binary is up to date with your GraphDef-generating binary.
 ```
-The model needs to be exported from a TF 1.3 installation.
+The model needs to be exported to a TF 1.3 installation.
 
 The [object_detection](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md) models were installed.
 
