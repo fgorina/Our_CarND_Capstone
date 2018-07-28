@@ -30,7 +30,18 @@ In short we need to follow these steps:
   - Classify as Red Yellow or Green.
   - Decide what to do next.
 
-## Links
+This is the resulting testing using the Simulator by means of the '/image_debug' topic enabled by default, a bounding box with the detected color is added to the image:
+
+![simulator green detection](./imgs/sim_green_detection.png)
+![simulator red detection](./imgs/sim_red_detection.png)
+
+Using the traffic_light.bag file:
+
+![bag green detection](./imgs/bag_green_detection.png)
+![bag yellow detection](./imgs/bag_yellow_detection.png)
+![bag red detection](./imgs/bag_red_detection.png)
+
+## References
 
   - [Deep Dive into Object Detection with Open Images, using Tensorflow](https://blog.algorithmia.com/deep-dive-into-object-detection-with-open-images-using-tensorflow/)
   - [Introduction and Use - Tensorflow Object Detection API Tutorial](https://pythonprogramming.net/introduction-use-tensorflow-object-detection-api-tutorial/)
