@@ -23,4 +23,8 @@
 
     <!--Camera Info Publisher -->
     <include file="$(find camera_info_publisher)/launch/camera_info_publisher.launch"/>
+
+    <!-- Generic parameters -->
+    <param name="is_simulation" value="false" />
+
 </launch>

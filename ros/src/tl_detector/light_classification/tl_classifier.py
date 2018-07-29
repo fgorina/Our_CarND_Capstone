@@ -9,7 +9,7 @@ from cv_bridge import CvBridge
 debug = True # Change here to disable Image debugging
 
 class TLClassifier(object):
-    def __init__(self):
+    def __init__(self, encoding='rgb8'):
         #TODO load classifier
 
         self.detection_graph = self.load_graph(self.get_graph_path())
@@ -19,7 +19,10 @@ class TLClassifier(object):
         self.detection_classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
         self.sess = tf.Session(graph=self.detection_graph)
 
+        self.encoding = encoding
+
         if debug == True:
+            self.set_colors()
             self.image_debug_pub = rospy.Publisher('/image_debug', Image, queue_size=1)
             self.bridge = CvBridge()
 
@@ -30,6 +33,15 @@ class TLClassifier(object):
             path = "../../ssd_bags_20K_tf1.3/frozen_inference_graph.pb"
         print("Tensorflow ", tf_version , ": using SSD reference model from path ", path)
         return path
+
+    def set_colors(self):
+        self.green = [0,255,0]
+        if self.encoding == 'rgb8':
+            self.red = [255,0,0]
+            self.yellow = [255,255,0]
+        else:
+            self.red = [0,0,255]
+            self.yellow = [0,255,255]
 
     def filter_boxes(self, min_score, boxes, scores, classes):
         n = len(classes)
@@ -137,15 +149,15 @@ class TLClassifier(object):
 
             color = [255,255,255]
             if detected_value == TrafficLight.RED:
-                color = [0,0,255]
+                color = self.red
             elif detected_value == TrafficLight.YELLOW:
-                color = [0,255,255]
+                color = self.yellow
             elif detected_value == TrafficLight.GREEN:
-                color = [0,255,0]
+                color = self.green
             cv2.rectangle(img_debug, (y1, x1), (y2, x2), color, thickness=-1)
         alpha = 0.4
         cv2.addWeighted(img_debug, alpha, image, 1 - alpha, 0, img_debug)
 
-        new_image = self.bridge.cv2_to_imgmsg(img_debug, encoding='rgb8')
+        new_image = self.bridge.cv2_to_imgmsg(img_debug, encoding=self.encoding)
         self.image_debug_pub.publish(new_image)
 

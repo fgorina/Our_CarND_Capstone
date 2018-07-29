@@ -51,13 +51,20 @@ class TLDetector(object):
         self.upcoming_red_light_pub = rospy.Publisher('/traffic_waypoint', Int32, queue_size=1)
 
         self.bridge = CvBridge()
-        self.light_classifier = TLClassifier()
+
+        is_simulator = rospy.get_param('is_simulation', 'true')
+        if is_simulator:
+            self.encoding = 'rgb8'
+        else:
+            self.encoding = 'bgr8'
+
+        self.light_classifier = TLClassifier(self.encoding)
         self.listener = tf.TransformListener()
 
         self.state = TrafficLight.UNKNOWN
         self.last_state = TrafficLight.UNKNOWN
 
-        rospy.logwarn("Initializing detector")
+        rospy.logwarn("Initializing detector using " + self.encoding + " encoding")
 
         rospy.spin()
 
@@ -141,7 +148,7 @@ class TLDetector(object):
             self.prev_light_loc = None
             return False
 
-        cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, desired_encoding="passthrough")
+        cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, desired_encoding=self.encoding)
 
         #Get classification
         return self.light_classifier.get_classification(cv_image)

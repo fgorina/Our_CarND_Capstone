@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!-- Sample rosbag player -->
+
+<launch>
+  <arg name="rosbag_file" default="/tmp/*.active" />
+  <node pkg="rosbag" type="play" name="player" output="screen" args="--clock -l $(arg rosbag_file) "/>
+</launch>
+
+<!--arg name="rosbag_file" default="my_file_1" />
+<arg name="file_1" default="my_file_1" />
+<arg name="file_2" default="my_file_2" />
+<node pkg="rosbag" type="play" name="player" output="screen" args="$(arg path)$(arg file_1).bag $(arg path)$(arg file_2).bag"/-->
