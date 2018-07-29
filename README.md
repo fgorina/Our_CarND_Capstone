@@ -56,23 +56,40 @@ The Control module is in charge of moving the vehicle:
   
 More detail [here](control.md).
 
-### Car or Simulation
+### Testing
 
-TODO improve here
+#### Simulation
+1. Run the simulator and select a slow resolution screen (to increase performance) for example 400x300.
+2. Select the 'Highway' track.
+3. Enable the 'Camera' option.
+4. Start your pipeline, go to the ros folder from your project, source it and run the correct launch file.
+```bash
+source devel/setup.sh
+roslaunch launch/styx.launch
+```
+5. When ready uncheck the 'Manual' option from the simulator to get started.
+6. For debugging purposes use the 'image_debug' topic.
+```bash
+rqt_image_view
+```
 
-#### Real world testing
+#### Real world
 1. Download [training bag](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/traffic_light_bag_file.zip) that was recorded on the Udacity self-driving car.
 2. Unzip the file
 ```bash
 unzip traffic_light_bag_file.zip
 ```
-3. Play the bag file
+3. Start ROS
+```bash
+roscore
+```
+4. Play the bag file
 ```bash
 rosbag play -l traffic_light_bag_file/traffic_light_training.bag
 ```
-4. Launch your project in site mode
+5. Launch your project in site mode
 ```bash
 cd CarND-Capstone/ros
 roslaunch launch/site.launch
 ```
-5. Confirm that traffic light detection works on real life images
+6. Confirm that traffic light detection works on real life images
