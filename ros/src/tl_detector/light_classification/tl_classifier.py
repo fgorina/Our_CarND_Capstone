@@ -146,6 +146,6 @@ class TLClassifier(object):
         alpha = 0.4
         cv2.addWeighted(img_debug, alpha, image, 1 - alpha, 0, img_debug)
 
-        new_image = self.bridge.cv2_to_imgmsg(img_debug, encoding='bgr8')
+        new_image = self.bridge.cv2_to_imgmsg(img_debug, encoding='rgb8')
         self.image_debug_pub.publish(new_image)
 
