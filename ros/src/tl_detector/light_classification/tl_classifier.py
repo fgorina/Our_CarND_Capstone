@@ -44,7 +44,7 @@ class TLClassifier(object):
 
         return filtered_boxes, filtered_scores, filtered_classes
 
-    def to_image_coords(boxes, height, width):
+    def to_image_coords(self, boxes, height, width):
         box_coords = np.zeros_like(boxes)
         box_coords[:, 0] = boxes[:, 0] * height
         box_coords[:, 1] = boxes[:, 1] * width
@@ -86,7 +86,7 @@ class TLClassifier(object):
         scores = np.squeeze(scores)
         classes = np.squeeze(classes)
 
-        width, height = image.size
+        width, height = image.shape[1], image.shape[0]
 
         #rospy.logwarn("Max Score " + str(max(scores)))
 
@@ -96,7 +96,7 @@ class TLClassifier(object):
 
         detected_value = TrafficLight.UNKNOWN
 
-        box_coords = to_image_coords(boxes, height, width)
+        box_coords = self.to_image_coords(boxes, height, width)
         number_of_boxes = np.array([0, 0, 0, 0])
 
         for(box, c, s) in zip(box_coords, classes, scores):
@@ -107,7 +107,7 @@ class TLClassifier(object):
         
 
         if len(classes) > 0:
-            color = np.argmax[number_of_boxes]
+            color = np.argmax(number_of_boxes)
             #rospy.logwarn("Image color " + str(classes)+ "  " + str(color))
 
 	    if color == 3:

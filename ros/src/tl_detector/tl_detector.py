@@ -160,9 +160,10 @@ class TLDetector(object):
 
         # List of positions that correspond to the line to stop in front of for a given intersection
         stop_line_positions = self.config['stop_line_positions']
+        car_wp_idx = 0
         if(self.pose):
             car_wp_idx = self.get_closest_waypoint(self.pose.pose.position.x, self.pose.pose.position.y)
-
+        # LS indent start
         #TODO find the closest visible traffic light (if one exists)
         diff = len(self.waypoints.waypoints) if self.waypoints and self.waypoints.waypoints else -1 # Defensive validation
         for i, light in enumerate(self.lights):
@@ -179,11 +180,11 @@ class TLDetector(object):
         if closest_light:
             state = self.get_light_state(closest_light)
             if state != TrafficLight.UNKNOWN:
-                rospy.logwarn("Light State : " + str(state))
+                pass#rospy.logwarn("Light State : " + str(state)) # LS TODO commented
             return line_wp_idx, state
 
         #self.waypoints = None
-        return -1, TrafficLight.UNKNOWN
+        return -1, TrafficLight.UNKNOWN # LS indent end
 
 if __name__ == '__main__':
     try:
