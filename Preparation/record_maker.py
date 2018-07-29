@@ -76,7 +76,7 @@ def group_to_tf_record(point, image_directory):
 
 
 def load_points(file_path):
-    with open(file_path, 'rb') as f:
+    with open(file_path, encoding='utf-8') as f:
         points = json.load(f)
     return points
 

@@ -9,6 +9,7 @@ import time
 from scipy.stats import norm
 import argparse
 import glob
+import os
 
 plt.style.use('ggplot')
 then = time.time()
@@ -189,12 +190,12 @@ if __name__ == '__main__':
 
     with tf.Session(graph=detection_graph) as sess:
 
-        files = glob.glob(image_dir+"/*.[pj][np]g")
+        files = glob.glob(image_dir+os.sep+"*.[pj][np]g")
 
         for f in files:
             #print(f)
             image = Image.open(f)
-            name = f.split("/")[-1].split(".")[-2]
+            name = f.split(os.sep)[-1].split(".")[-2]
             raw_img = np.asarray(image, dtype=np.uint8)
 
             if len(raw_img.shape) < 3:  # sometimes bad images occur (B&W)

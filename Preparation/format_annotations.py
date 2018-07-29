@@ -4,6 +4,7 @@ import csv
 import argparse
 from tqdm import tqdm
 import glob
+import os
 
 # Lets extract not only each annotation, but a list of image id's.
 # This id index will be used to filter out images that don't have valid annotations.
@@ -20,6 +21,7 @@ def format_annotations(annotation_path, trainable_classes_path):
             if annotation['label'] in trainable_classes:
                 annotations.append(annotation)
                 ids.append(row[0])
+
     ids = dedupe(ids)
     return annotations, ids
 
@@ -39,11 +41,11 @@ def format_image_index(images_path):
     return images
 
 def format_image_dir_index(images_path):
-    files = glob.glob(images_path+"/*.[pj][np]g")
+    files = glob.glob(images_path+os.sep+"*.[pj][np]g")
     images = []
     for f in files:
-        name = f.split("/")[-1].split(".")[-2]
-        url = "file:///"+images_path+"/"+f
+        name = f.split(os.sep)[-1].split(".")[-2]
+        url = os.path.abspath(f)
         image = {'id': name, 'url': url}
         images.append(image)
 
@@ -92,7 +94,6 @@ if __name__ == "__main__":
     image_index_output_path = args.index_out_path
     trainable_classes_path = args.trainable_path
     annotations, valid_image_ids = format_annotations(anno_input_path, trainable_classes_path)
-    #images = format_image_index(image_index_input_path)
     images = format_image_dir_index(image_index_input_path)
     points = points_maker(annotations)
     filtered_images = filter_image_index(images, valid_image_ids)
