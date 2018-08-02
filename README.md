@@ -9,7 +9,7 @@ For more information about the [project](https://github.com/udacity/CarND-Capsto
   - [Francisco Gorina](https://github.com/fgorina) (lead) : fgorina@gmail.com
   - [Ricardo Rios](https://github.com/ricardoues) : ricardo.rios.sv@gmail.com
   - [Luciano Silveira](https://github.com/ladrians) : ladrians@gmail.com
-  - Frank Wong : wfhit@139.com
+  - [Frank Wong](https://github.com/WfHit) : wfhit@139.com
   - Omar Barrera : oabj1986@gmail.com
 
 ## Installation
