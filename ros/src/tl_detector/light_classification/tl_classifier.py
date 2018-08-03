@@ -29,7 +29,7 @@ class TLClassifier(object):
     def get_graph_path(self):
         tf_version = tf.__version__
         path = "../../ssd_bags_20K/frozen_inference_graph.pb"
-        if tf_version <= '1.3.0':
+        if tf_version <= '1.5.0':
             path = "../../ssd_bags_20K_tf1.3/frozen_inference_graph.pb"
         print("Tensorflow ", tf_version , ": using SSD reference model from path ", path)
         return path
@@ -102,7 +102,7 @@ class TLClassifier(object):
 
         #rospy.logwarn("Max Score " + str(max(scores)))
 
-        confidence_cutoff = 0.8    # Modified from 0.6 -> 0.8. Seems better
+        confidence_cutoff = 0.7
 
         (boxes, scores, classes) = self.filter_boxes(confidence_cutoff, boxes, scores, classes)
 
