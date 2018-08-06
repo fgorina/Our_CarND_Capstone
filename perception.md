@@ -36,7 +36,7 @@ In the simulator traffic lights come in sets of three. We used this fact to incr
   
 This is implemented in the __tl_classifier.py__ function :
 
-```
+```python
 
         confidence_cutoff = 0.8    # Modified from 0.6 -> 0.8. Seems better
 
