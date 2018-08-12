@@ -5,6 +5,7 @@ import rospy
 from sensor_msgs.msg import Image
 import cv2
 from cv_bridge import CvBridge
+from time import time
 
 debug = True # Change here to disable Image debugging
 
@@ -20,6 +21,9 @@ class TLClassifier(object):
         self.sess = tf.Session(graph=self.detection_graph)
 
         self.encoding = encoding
+        self.now = None
+        self.then = None
+        self.elapsed_time = 0.
 
         if debug == True:
             self.set_colors()
@@ -89,6 +93,7 @@ class TLClassifier(object):
 
         """
         #TODO implement light color prediction
+        self.then = time()
 
         image_np = np.expand_dims(np.asarray(image, dtype=np.uint8)[:, :, 0:3], 0)
         (boxes, scores, classes) = self.sess.run([self.detection_boxes, self.detection_scores, self.detection_classes],
@@ -136,6 +141,7 @@ class TLClassifier(object):
     def show_detection(self, image, boxes, detected_value):
         """Display the detection as a new topic with the associated color"""
 
+        detection = "No detection"
         img_debug = np.copy(image)
         for i, box in enumerate(boxes):
             x1 = int(box[0] * image.shape[0])
@@ -149,14 +155,22 @@ class TLClassifier(object):
 
             color = [255,255,255]
             if detected_value == TrafficLight.RED:
+                detection = "Red"
                 color = self.red
             elif detected_value == TrafficLight.YELLOW:
+                detection = "Yellow"
                 color = self.yellow
             elif detected_value == TrafficLight.GREEN:
+                detection = "Green"
                 color = self.green
             cv2.rectangle(img_debug, (y1, x1), (y2, x2), color, thickness=-1)
         alpha = 0.4
         cv2.addWeighted(img_debug, alpha, image, 1 - alpha, 0, img_debug)
+
+        self.now = time()
+        self.elapsed_time = self.now - self.then
+        label = "%s: %.2fs" % (detection, self.elapsed_time)
+        cv2.putText(img_debug, label, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2)
 
         new_image = self.bridge.cv2_to_imgmsg(img_debug, encoding=self.encoding)
         self.image_debug_pub.publish(new_image)
