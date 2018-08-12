@@ -71,7 +71,7 @@ class TLClassifier(object):
 
     # class : 0 -> Unknown 1-> Red 2-> Yellow 3->Green
     # 
-    def get_color_class(image):
+    def get_color(image):
         
         h = img.shape[0]
         w = img.shape[1]
