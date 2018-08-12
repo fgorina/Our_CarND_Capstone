@@ -32,9 +32,10 @@ class TLClassifier(object):
 
     def get_graph_path(self):
         tf_version = tf.__version__
-        path = "../../ssd_bags_20K/frozen_inference_graph.pb"
+        graph_folder = "ssd_bags_20K" # options are 'ssd_bags_20K' or 'box_ssd'
+        path = "../../" + graph_folder + "/frozen_inference_graph.pb"
         if tf_version <= '1.5.0':
-            path = "../../ssd_bags_20K_tf1.3/frozen_inference_graph.pb"
+            path = "../../" + graph_folder + "_tf1.3/frozen_inference_graph.pb"
         print("Tensorflow ", tf_version , ": using SSD reference model from path ", path)
         return path
 
@@ -71,10 +72,10 @@ class TLClassifier(object):
 
     # class : 0 -> Unknown 1-> Red 2-> Yellow 3->Green
     # 
-    def get_color(image):
+    def get_color(self, bimg):
         
-        h = img.shape[0]
-        w = img.shape[1]
+        h = bimg.shape[0]
+        w = bimg.shape[1]
     
         dl = int(h/3)
         dx0 = int(h/9)
@@ -153,7 +154,7 @@ class TLClassifier(object):
             for i in range(len(boxes)):
                 box = boxes[i]
                 bimg = image_np[0, int(box[0]):int(box[2]), int(box[1]):int(box[3]),:]
-                color = get_color(bimg)
+                color = self.get_color(bimg)
                 classes[i] = color
 
         detected_value = TrafficLight.UNKNOWN
