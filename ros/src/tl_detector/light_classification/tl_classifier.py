@@ -69,6 +69,38 @@ class TLClassifier(object):
 
         return box_coords
 
+    # class : 0 -> Unknown 1-> Red 2-> Yellow 3->Green
+    # 
+    def get_color_class(image):
+        
+        h = img.shape[0]
+        w = img.shape[1]
+    
+        dl = int(h/3)
+        dx0 = int(h/9)
+        dx1 = 2*dx0
+        
+        red = np.sum(bimg[0:dl-1, dx0:dx1, :])
+        orange = np.sum(bimg[dl:(2*dl)-1, dx0:dx1, :])
+        green = np.sum(bimg[(dl*2):(dl*3)-1, dx0:dx1, :])
+    
+    
+        if green > orange and green > red:
+            color = 3
+    
+        elif orange > red and orange > green:
+            color = 2
+    
+        elif red > orange and red > green:
+            color = 1
+    
+        else:
+            color = 0
+    
+        return color
+    
+        
+
 
     def load_graph(self, graph_file):
         graph = tf.Graph()
@@ -94,6 +126,8 @@ class TLClassifier(object):
         """
         #TODO implement light color prediction
         self.then = time()
+        
+        compute_color = False   # Specifies if we must compute color from the traffic light image
 
         image_np = np.expand_dims(np.asarray(image, dtype=np.uint8)[:, :, 0:3], 0)
         (boxes, scores, classes) = self.sess.run([self.detection_boxes, self.detection_scores, self.detection_classes],
@@ -110,6 +144,17 @@ class TLClassifier(object):
         confidence_cutoff = 0.7
 
         (boxes, scores, classes) = self.filter_boxes(confidence_cutoff, boxes, scores, classes)
+        
+        
+        # Here we compute light colors manually forgetting the result of the SSD
+        
+        if compute_color:
+        
+            for i in range(len(boxes)):
+                box = boxes[i]
+                bimg = image_np[0, int(box[0]):int(box[2]), int(box[1]):int(box[3]),:]
+                color = get_color(bimg)
+                classes[i] = color
 
         detected_value = TrafficLight.UNKNOWN
 
