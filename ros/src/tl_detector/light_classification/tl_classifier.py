@@ -148,18 +148,18 @@ class TLClassifier(object):
         
         
         # Here we compute light colors manually forgetting the result of the SSD
+
+        box_coords = self.to_image_coords(boxes, height, width)
         
         if compute_color:
         
             for i in range(len(boxes)):
-                box = boxes[i]
+                box = box_coords[i]
                 bimg = image_np[0, int(box[0]):int(box[2]), int(box[1]):int(box[3]),:]
                 color = self.get_color(bimg)
                 classes[i] = color
 
         detected_value = TrafficLight.UNKNOWN
-
-        box_coords = self.to_image_coords(boxes, height, width)
         number_of_boxes = np.array([0, 0, 0, 0])
 
         for(box, c, s) in zip(box_coords, classes, scores):
